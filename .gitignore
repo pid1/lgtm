@@ -1,0 +1,14 @@
+node_modules/
+.wrangler/
+.dev.vars
+*.log
+.DS_Store
+miyoo/build/
+miyoo/dist/
+miyoo/app/config.txt
+log.txt
+settings.txt
+
+# Fetched and checksum-verified by miyoo/Makefile
+miyoo/vendor/curl
+miyoo/vendor/cacert.pem

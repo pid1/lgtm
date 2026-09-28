@@ -1,0 +1,6 @@
+{
+  "label": "lgtm",
+  "icon": "icon.png",
+  "launch": "launch.sh",
+  "description": "Approve Claude Code from the couch"
+}

@@ -1,0 +1,28 @@
+name = "lgtm"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+# Served only at lgtm.pid1.space. The workers.dev URL and preview URLs would
+# be extra, unlisted entry points to the same thing, so they are off.
+workers_dev = false
+preview_urls = false
+routes = [{ pattern = "lgtm.pid1.space", custom_domain = true }]
+
+# One Durable Object per profile holds its inbox: pending requests, their
+# decisions, and when the device last polled it.
+[[durable_objects.bindings]]
+name = "INBOX"
+class_name = "Inbox"
+
+# Profiles paired from the device and their pending pairing codes.
+[[durable_objects.bindings]]
+name = "REGISTRY"
+class_name = "Registry"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Inbox"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["Registry"]

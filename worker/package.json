@@ -1,0 +1,18 @@
+{
+  "name": "lgtm",
+  "version": "0.1.0",
+  "description": "Relay between Claude Code's PermissionRequest hook and a handheld that approves or denies.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "key": "node scripts/key.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260918.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.135.0"
+  }
+}

@@ -1,0 +1,2 @@
+URL=https://lgtm.<your-subdomain>.workers.dev
+TOKEN=<device token from `npm run key -- device miyoo`>

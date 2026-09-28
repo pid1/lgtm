@@ -1,0 +1,62 @@
+name: release
+
+# Publishing a GitHub release ships it: the Worker goes to lgtm.pid1.space,
+# and the Miyoo app zip and the hook script are attached to the release.
+#
+# CLOUDFLARE_API_TOKEN needs Workers Scripts: Edit on the account and
+# Workers Routes: Edit on the pid1.space zone (for the custom domain).
+# CLOUDFLARE_ACCOUNT_ID is the account it deploys into.
+
+on: # yamllint disable-line rule:truthy
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy
+      - name: Check it answers, and only with a token
+        run: |
+          set -euo pipefail
+          code=$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 5 https://lgtm.pid1.space/v1/device/profiles)
+          echo "unauthenticated request: $code"
+          [ "$code" = 401 ]
+
+  assets:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Miyoo app
+        run: make -C miyoo package
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" miyoo/dist/lgtm-miyoo.zip hook/lgtm-hook.mjs --clobber
