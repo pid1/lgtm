@@ -1,6 +1,7 @@
 # Cross-compiles inside the Onion toolchain image and stages an Onion app in
 # dist/App/lgtm, ready to copy to /mnt/SDCARD/App/lgtm.
-IMAGE := aemiii91/miyoomini-toolchain:latest
+# The image only publishes :latest, so it is pinned by digest.
+IMAGE := aemiii91/miyoomini-toolchain:latest@sha256:e5123590ad75d27f0f4c91196e3119a255cad45f3ae15243e29a8e0a2ec50132
 CC := /opt/miyoomini-toolchain/bin/arm-linux-gnueabihf-gcc
 CFLAGS := -O2 -Wall -Wextra -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
 LIBS := -lSDL -lSDL_ttf -lSDL_mixer -lpthread
@@ -10,8 +11,8 @@ APP := dist/App/lgtm
 # HTTPS on the device is a static curl (stunnel/static-curl, armv7 musl) and
 # Mozilla's CA bundle. Both are downloaded at build time and checked, rather
 # than committed.
-CURL_VERSION := 8.22.0
-CURL_SHA256 := 8c6450bbd9d8ff4f8a82144b49a47aa3a08a887d11552306f21705c104fa35d5
+CURL_VERSION := 8.23.0
+CURL_SHA256 := 63fe75cb4cb29add78b752271eb37e9279da01a756d3c0205304ae15b967f7a0
 SHA256 := $(shell command -v sha256sum >/dev/null 2>&1 && echo sha256sum || echo shasum -a 256)
 
 all: $(APP)/lgtm
