@@ -247,7 +247,10 @@ static void fetch_profiles(char *resp, size_t cap) {
   if (http("", "/v1/device/profiles", resp, cap) != 200) return;
   pthread_mutex_lock(&mu);
   profile_count = 1;
-  for (char *line = strtok(resp, "\n"); line && profile_count <= MAX_PROFILES; line = strtok(NULL, "\n"))
+  // Runs on both the UI and network threads; strtok_r keeps the tokenizer state local.
+  char *save = NULL;
+  for (char *line = strtok_r(resp, "\n", &save); line && profile_count <= MAX_PROFILES;
+       line = strtok_r(NULL, "\n", &save))
     if (valid_name(line) && strcmp(line, "all")) snprintf(profiles[profile_count++], 33, "%s", line);
   pthread_mutex_unlock(&mu);
 }
