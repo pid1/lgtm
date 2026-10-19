@@ -1,6 +1,6 @@
 name = "lgtm"
 main = "src/index.ts"
-compatibility_date = "2026-09-01"
+compatibility_date = "2026-10-19"
 
 # Served only at lgtm.pid1.space. The workers.dev URL and preview URLs would
 # be extra, unlisted entry points to the same thing, so they are off.
